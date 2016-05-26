@@ -1,0 +1,26 @@
+name: CraftCoins
+main: ru.undefined1.CraftCoins.CraftCoins
+version: "0.1.6102"
+author: undefined1
+api: ["1.0.0"]
+
+commands:
+  coins:
+    usage: "/coins"
+    permission: CraftCoins.cmd
+
+permissions:
+  CraftCoins.reload:
+    default: op
+  CraftCoins.view:
+    default: true
+  CraftCoins.pay:
+    default: true
+  CraftCoins.take:
+    default: op
+  CraftCoins.add:
+    default: op
+  CraftCoins.set:
+    default: op
+  CraftCoins.cmd:
+    default: op
