@@ -42,10 +42,12 @@ public class CraftCoins extends PluginBase implements Listener {
     public CraftCoins() {
     }
 
+    // Getting message from configuration
     public String getMessage(String name) {
         return TextFormat.colorize(cfg.getString("Settings.Prefix") + " " + cfg.getString("MESSAGES.COMMANDS." + name));
     }
 
+    // Sending message to console with or without prefix
     public void sendConsoleMessage(String message, Boolean prefix) {
         String prefixs = TextFormat.colorize("&e[&6CraftCoins&e] ");
         if (prefix) {
@@ -62,23 +64,25 @@ public class CraftCoins extends PluginBase implements Listener {
 
     public void onEnable() {
 
+        plugin = this;
+
+        // Saving configuration
         this.getDataFolder().mkdirs();
         this.saveDefaultConfig();
         this.saveResource("CoinsData.yml", false);
         this.saveResource("config.yml", false);
-
-        getServer().getPluginManager().registerEvents(new CraftCoinsListener(this), this);
-        getServer().getPluginManager().registerEvents(this, this);
-
-        plugin = this;
-
-        api = new CraftCoinsAPI();
 
         this.config = new File(this.getDataFolder(), "config.yml");
         cfg = new Config(this.config, 2);
 
         this.MoneyData = new File(this.getDataFolder(), "CoinsData.yml");
         money = new Config(this.MoneyData, 2);
+
+        // Registering listeners
+        getServer().getPluginManager().registerEvents(new CraftCoinsListener(this), this);
+
+        // Registering CraftCoinsAPI
+        api = new CraftCoinsAPI();
     }
 
     public static CraftCoins getCraftCoins() {
@@ -89,6 +93,7 @@ public class CraftCoins extends PluginBase implements Listener {
         return api;
     }
 
+    // Plugin commands, you can turn it off using Boolean "Enable-Commands: false"
     @Override
     public boolean onCommand(CommandSender s, Command cmd, String cmdLabel, String[] args) {
         if(cfg.getBoolean("Settings.Enable-Commands")) {
@@ -110,7 +115,7 @@ public class CraftCoins extends PluginBase implements Listener {
                                     if (!CraftCoinsAPI.isBalanceFrozen(player)) {
                                         if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
                                             s.sendMessage(getMessage("COINS-SET.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.setPlayerCoins(player, getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                            CraftCoinsAPI.setPlayerCoins(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }
@@ -162,7 +167,7 @@ public class CraftCoins extends PluginBase implements Listener {
                                     if (!CraftCoinsAPI.isBalanceFrozen(player)) {
                                         if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
                                             s.sendMessage(getMessage("COINS-ADD.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(args[1]) + Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.addPlayerCoins(player, getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                            CraftCoinsAPI.addPlayerCoins(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }
@@ -189,7 +194,7 @@ public class CraftCoins extends PluginBase implements Listener {
                                     if (!CraftCoinsAPI.isBalanceFrozen(player)) {
                                         if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
                                             s.sendMessage(getMessage("COINS-TAKE.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(args[1]) - Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.takePlayerCoins(player, getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                            CraftCoinsAPI.takePlayerCoins(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }

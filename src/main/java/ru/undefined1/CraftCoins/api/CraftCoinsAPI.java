@@ -18,14 +18,15 @@ public class CraftCoinsAPI {
 
     private static CraftCoins main = CraftCoins.getPlugin();
 
+    // Reloading all configs
     public static void reloadConfigs() {
         main.money.save();
         main.cfg.save();
         main.money.reload();
         main.cfg.reload();
-        main.sendConsoleMessage("&8Saved and reloaded coins data!", true);
     }
 
+    // Getting the name of coins
     public static String getCoinsName() {
         if(main.cfg.getString("Settings.Balance.coins-name") != null) {
             return main.cfg.getString("Settings.Balance.coins-name");
@@ -34,8 +35,7 @@ public class CraftCoinsAPI {
         }
     }
 
-    // Получение баланса игрока
-
+    // Get a player balance
     public static double getPlayerCoins(Player player) {
         if (main.money.getString(player.getName() + ".balance") != null) {
             return main.money.getDouble(player.getName() + ".balance");
@@ -56,22 +56,20 @@ public class CraftCoinsAPI {
         }
     }
 
-    // Установка баланса игрока
-
-    public static void setPlayerCoins(Player sender, Player player, double Coins) {
+    // Set player balance
+    public static void setPlayerCoins(Player player, double Coins) {
         if (main.money.getString(player.getName() + ".balance") != null) {
             main.money.set(player.getName() + ".balance", Coins);
             main.sendConsoleMessage("&8You set &e" + Coins + " #coins &8to player!".replaceAll("#coins", getCoinsName()), true);
             reloadConfigs();
-            main.getServer().getPluginManager().callEvent(new SetCoinsEvent(sender, player, Coins));
+            main.getServer().getPluginManager().callEvent(new SetCoinsEvent(player, Coins));
         } else {
             main.sendConsoleMessage("&c[setPlayerCoins] &8Player don't have #coins!".replaceAll("#coins", getCoinsName()), true);
         }
     }
 
 
-    // Отдать деньги другому игроку
-
+    // Send some money to another player
     public static void sendCoinsToPlayer(Player sender, Player target, double CoinsToSend) {
         if (main.money.getString(sender.getName() + ".balance") != null) {
             double coins = getPlayerCoins(sender);
@@ -85,8 +83,8 @@ public class CraftCoinsAPI {
                     }
                     String coinsToSend = String.valueOf(CoinsToSend).replaceAll("-", "");
                     double send = Double.parseDouble(coinsToSend);
-                    takePlayerCoins(sender, sender, send);
-                    addPlayerCoins(sender, target, send);
+                    takePlayerCoins(sender, send);
+                    addPlayerCoins(target, send);
                     main.sendConsoleMessage("&8Sender balance: &e" + coins + " #coins".replaceAll("#coins", getCoinsName()), true);
                     main.sendConsoleMessage("&8Target balance: &e" + getPlayerCoins(target) + " #coins".replaceAll("#coins", getCoinsName()), true);
                     main.getServer().getPluginManager().callEvent(new SendCoinsEvent(sender, target, CoinsToSend));
@@ -101,9 +99,8 @@ public class CraftCoinsAPI {
         }
     }
 
-    // Забрать определенное количество коинов у игрока
-
-    public static void takePlayerCoins(Player sender, Player player, double CoinsToTake) {
+    // Take some coins from player
+    public static void takePlayerCoins(Player player, double CoinsToTake) {
         if (main.money.getString(player.getName() + ".balance") != null) {
             double coins = getPlayerCoins(player);
             if (coins != 0) {
@@ -112,9 +109,9 @@ public class CraftCoinsAPI {
                 } else {
                     String check = String.valueOf(CoinsToTake).replaceAll("-", "");
                     double toTake = coins - Double.valueOf(check);
-                    setPlayerCoins(sender, player, toTake);
+                    setPlayerCoins(player, toTake);
                     reloadConfigs();
-                    main.getServer().getPluginManager().callEvent(new TakeCoinsEvent(sender, player, CoinsToTake));
+                    main.getServer().getPluginManager().callEvent(new TakeCoinsEvent(player, CoinsToTake));
                     main.sendConsoleMessage("&8Player balance: &e" + toTake + " #coins".replaceAll("#coins", getCoinsName()), true);
                 }
             } else {
@@ -125,9 +122,8 @@ public class CraftCoinsAPI {
         }
     }
 
-    // Добавить определенное количество коинов игроку
-
-    public static void addPlayerCoins(Player sender, Player player, double CoinsToAdd) {
+    // Add some coins to player
+    public static void addPlayerCoins(Player player, double CoinsToAdd) {
         if (main.money.getString(player.getName() + ".balance") != null) {
             double coins = getPlayerCoins(player);
             if (coins != 0) {
@@ -135,7 +131,7 @@ public class CraftCoinsAPI {
                 main.money.set(player.getName() + ".balance", finalCoins);
                 main.sendConsoleMessage("&8You add &e" + CoinsToAdd + " #coins &8to player!".replaceAll("#coins", getCoinsName()), true);
                 reloadConfigs();
-                main.getServer().getPluginManager().callEvent(new AddCoinsEvent(sender, player, CoinsToAdd));
+                main.getServer().getPluginManager().callEvent(new AddCoinsEvent(player, CoinsToAdd));
                 double coinsAfter = getPlayerCoins(player);
                 main.sendConsoleMessage("&8Player balance: &e" + coinsAfter + " #coins".replaceAll("#coins", getCoinsName()), true);
 
@@ -148,8 +144,7 @@ public class CraftCoinsAPI {
     }
 
 
-    // Создание баланса игрока
-
+    // Create player balance
     public static void createPlayerBalance(Player player) {
         if (main.money.getString(player.getName() + ".balance") != null) {
             if (main.cfg.getString("Settings.Balance.start-balance") != null) {
@@ -165,20 +160,19 @@ public class CraftCoinsAPI {
         }
     }
 
-    // Управление заморозкой баланса игрока
-
+    // Froze player balance
     public static void frozePlayerBalance(Player player) {
         if (main.money.getString(player.getName() + ".balance") != null) {
             main.money.set(player.getName() + ".frozen", true);
             reloadConfigs();
                 main.getServer().getPluginManager().callEvent(new PlayerBalanceFrozeEvent(player));
+            main.sendConsoleMessage("&c[frozePlayerBalance] &8Player balance is frozen now!", true);
         } else {
-            main.sendConsoleMessage("&c[frozePlayerBalance] &8Player balance already exists!", true);
+            main.sendConsoleMessage("&c[frozePlayerBalance] &8Player balance not exists!", true);
         }
     }
 
-    // Специальный код
-
+    // Special player code (W.I.P)
     public static int getSpecialCode(Player player) {
         if (main.money.getString(player.getName() + ".code") != null) {
             return main.money.getInt(player.getName() + ".code");

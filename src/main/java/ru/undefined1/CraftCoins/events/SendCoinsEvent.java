@@ -16,30 +16,30 @@ import cn.nukkit.event.player.PlayerEvent;
  */
 public class SendCoinsEvent extends PlayerEvent implements Cancellable {
 
-    Player s;
-    Player By;
-    double c;
+    Player To;
+    Player From;
+    double count;
     private static final HandlerList handlers = new HandlerList();
 
     public static HandlerList getHandlers() {
         return handlers;
     }
 
-    public SendCoinsEvent(Player by, Player sender, double CoinsToSend) {
-        this.s = sender;
-        this.c = CoinsToSend;
-        this.By = by;
+    public SendCoinsEvent(Player sender, Player target, double CoinsToSend) {
+        this.To = target;
+        this.From = sender;
+        this.count = CoinsToSend;
     }
 
     public Player getPlayer() {
-        return s;
+        return To;
     }
 
     public Player getSender() {
-        return this.By;
+        return From;
     }
 
     public double getCoinsAmmount() {
-        return c;
+        return count;
     }
 }

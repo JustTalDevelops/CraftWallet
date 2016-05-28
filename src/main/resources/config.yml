@@ -23,6 +23,7 @@ MESSAGES:
     COINS-PAY:
       ERROR: "&8You don't have &6<coins> #coins &8on balance!"
       SUCCESSFUL: "&8Player &6<player> &8now have &6<coins> #coins"
+      TARGET: "&8Player &6<player> &8send to you &6<coins> #coins"
       USE: "&6Use: &8/coins pay &6<receiver> <ammount>"
     COINS-ADD:
       SUCCESSFUL: "&8Player &6<player> &8now have &6<coins> #coins"

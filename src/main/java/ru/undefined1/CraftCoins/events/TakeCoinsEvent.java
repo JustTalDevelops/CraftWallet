@@ -17,7 +17,6 @@ import cn.nukkit.event.player.PlayerEvent;
 public class TakeCoinsEvent extends PlayerEvent implements Cancellable {
 
     Player s;
-    Player By;
     double c;
     private static final HandlerList handlers = new HandlerList();
 
@@ -25,18 +24,13 @@ public class TakeCoinsEvent extends PlayerEvent implements Cancellable {
         return handlers;
     }
 
-    public TakeCoinsEvent(Player by, Player sender, double CoinsToTake) {
+    public TakeCoinsEvent(Player sender, double CoinsToTake) {
         this.s = sender;
         this.c = CoinsToTake;
-        this.By = by;
     }
 
     public Player getPlayer() {
         return s;
-    }
-
-    public Player getSender() {
-        return this.By;
     }
 
     public double getCoinsAmmount() {

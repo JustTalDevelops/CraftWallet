@@ -5,6 +5,7 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import ru.undefined1.CraftCoins.CraftCoins;
+import ru.undefined1.CraftCoins.api.CraftCoinsAPI;
 import ru.undefined1.CraftCoins.events.AddCoinsEvent;
 import ru.undefined1.CraftCoins.events.SendCoinsEvent;
 import ru.undefined1.CraftCoins.events.SetCoinsEvent;
@@ -38,6 +39,13 @@ public class CraftCoinsListener implements Listener {
             }
         }
 
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onSend(SendCoinsEvent e) {
+        if(plugin.cfg.getBoolean("Settings.Enable-Commands")) {
+            e.getPlayer().sendMessage((plugin.getMessage("COINS-PAY.SUCCESSFUL").replaceAll("<player>", e.getSender().getName()).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(e.getCoinsAmmount()))));
+        }
     }
 
 }
