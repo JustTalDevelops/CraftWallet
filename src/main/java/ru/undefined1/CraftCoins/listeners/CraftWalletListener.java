@@ -4,16 +4,12 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerJoinEvent;
-import ru.undefined1.CraftCoins.CraftCoins;
-import ru.undefined1.CraftCoins.api.CraftCoinsAPI;
-import ru.undefined1.CraftCoins.events.AddCoinsEvent;
-import ru.undefined1.CraftCoins.events.SendCoinsEvent;
-import ru.undefined1.CraftCoins.events.SetCoinsEvent;
-
-import java.util.Set;
+import ru.undefined1.CraftCoins.CraftWallet;
+import ru.undefined1.CraftCoins.api.CraftWalletAPI;
+import ru.undefined1.CraftCoins.events.SendMoneyEvent;
 
 /**
- * ru.undefined1.CraftCoins.CraftCoinListener developed by undefined1
+ * ru.undefined1.CraftCoins.CraftWalletListener developed by undefined1
  * .
  * This project can be modified by another user, but you need paste link to original GitHub or other project page!
  * You can use software API and making addons without links to this project.
@@ -21,11 +17,11 @@ import java.util.Set;
  * Project create date: 23.05.2016
  * Adv4Core and XonarTeam 2016 (c) All rights reserved.
  */
-public class CraftCoinsListener implements Listener {
+public class CraftWalletListener implements Listener {
 
-    CraftCoins plugin;
+    CraftWallet plugin;
 
-    public CraftCoinsListener(CraftCoins plugin) {
+    public CraftWalletListener(CraftWallet plugin) {
         this.plugin = plugin;
     }
 
@@ -42,9 +38,9 @@ public class CraftCoinsListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onSend(SendCoinsEvent e) {
+    public void onSend(SendMoneyEvent e) {
         if(plugin.cfg.getBoolean("Settings.Enable-Commands")) {
-            e.getPlayer().sendMessage((plugin.getMessage("COINS-PAY.SUCCESSFUL").replaceAll("<player>", e.getSender().getName()).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(e.getCoinsAmmount()))));
+            e.getPlayer().sendMessage((plugin.getMessage("WALLET-PAY.SUCCESSFUL").replaceAll("<player>", e.getSender().getName()).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(e.getCoinsAmmount()))));
         }
     }
 

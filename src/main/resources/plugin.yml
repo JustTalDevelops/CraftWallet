@@ -1,26 +1,26 @@
-name: CraftCoins
-main: ru.undefined1.CraftCoins.CraftCoins
-version: "0.1.6102"
+name: CraftWallet
+main: ru.undefined1.CraftCoins.CraftWallet
+version: "1.1"
 author: undefined1
 api: ["1.0.0"]
 
 commands:
-  coins:
-    usage: "/coins"
-    permission: CraftCoins.cmd
+  money:
+    usage: "/money"
+    permission: CraftWallet.cmd
 
 permissions:
-  CraftCoins.reload:
+  CraftWallet.reload:
     default: op
-  CraftCoins.view:
+  CraftWallet.view:
     default: true
-  CraftCoins.pay:
+  CraftWallet.pay:
     default: true
-  CraftCoins.take:
+  CraftWallet.take:
     default: op
-  CraftCoins.add:
+  CraftWallet.add:
     default: op
-  CraftCoins.set:
+  CraftWallet.set:
     default: op
-  CraftCoins.cmd:
-    default: op
+  CraftWallet.cmd:
+    default: true
