@@ -1,9 +1,9 @@
 # You can set player's start balance and change plugin messages #
 
 Settings:
-  Prefix: "&e(&6CraftCoins&e)"
+  Prefix: "&5(&dCraftWallet&5)"
   Balance:
-    coins-name: "coins"
+    money-symbol: "$"
     create-on-player-join: true
     start-balance: 50
   Enable-Commands: true
@@ -12,22 +12,23 @@ Settings:
 MESSAGES:
   COMMANDS:
     DISABLED: "&cThis command disabled by server administrator"
-    COINS-BALANCE-PLAYER: "&8<player> have &6<coins> #coins"
-    COINS-BALANCE: "&8You have &6<coins> #coins"
+    WALLET-BALANCE-PLAYER: "&7<player> have &d<count>#walletSymbol"
+    WALLET-BALANCE: "&7You have &d<count>#walletSymbol"
     NOT-ONLINE: "&cPlayer &4<player> &cisn't online!"
     BALANCE-IS-FROZEN: "&cYour balance is fozen! You can't buy or sell anything!"
-    LOW-BALANCE: "&cYou have no #coins on balance!"
-    COINS-SET:
-      SUCCESSFUL: "&8Player &6<player> &8now have &6<coins> #coins"
-      USE: "&6Use: &8/coins set &6<player> <ammount>"
-    COINS-PAY:
-      ERROR: "&8You don't have &6<coins> #coins &8on balance!"
-      SUCCESSFUL: "&8Player &6<player> &8now have &6<coins> #coins"
-      TARGET: "&8Player &6<player> &8send to you &6<coins> #coins"
-      USE: "&6Use: &8/coins pay &6<receiver> <ammount>"
-    COINS-ADD:
-      SUCCESSFUL: "&8Player &6<player> &8now have &6<coins> #coins"
-      USE: "&6Use: &8/coins add &6<player> <ammount>"
-    COINS-TAKE:
-      SUCCESSFUL: "&8Player &6<player> &8now have &6<coins> #coins"
-      USE: "&6Use: &8/coins add &6<player> <ammount>"
+    LOW-BALANCE: "&cYou have no#walletSymbol on balance!"
+    WALLET-SET:
+      SUCCESSFUL: "&7Player &d<player> &7now have &d<count>#walletSymbol"
+      USE: "&dUse: &7/coins set &d<player> <ammount>"
+    WALLET-PAY:
+      YOUSELF: "&cYou can't send money to youself!"
+      ERROR: "&7You don't have &d<count>#walletSymbol &7on balance!"
+      SUCCESSFUL: "&7Player &d<player> &7now have &d<count>#walletSymbol"
+      TARGET: "&7Player &d<player> &7send to you &d<count>#walletSymbol"
+      USE: "&dUse: &7/coins pay &d<target> <ammount>"
+    WALLET-ADD:
+      SUCCESSFUL: "&7Player &d<player> &7now have &d<count>#walletSymbol"
+      USE: "&dUse: &7/coins add &d<player> <ammount>"
+    WALLET-TAKE:
+      SUCCESSFUL: "&7Player &d<player> &7now have &d<count>#walletSymbol"
+      USE: "&dUse: &7/coins add &d<player> <ammount>"

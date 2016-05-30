@@ -14,32 +14,27 @@ import cn.nukkit.event.player.PlayerEvent;
  * Project create date: 25.05.2016
  * Adv4Core and XonarTeam 2016 (c) All rights reserved.
  */
-public class SendCoinsEvent extends PlayerEvent implements Cancellable {
+public class SetMoneyEvent extends PlayerEvent implements Cancellable {
 
-    Player To;
-    Player From;
-    double count;
+    Player s;
+    double c;
     private static final HandlerList handlers = new HandlerList();
 
     public static HandlerList getHandlers() {
         return handlers;
     }
 
-    public SendCoinsEvent(Player sender, Player target, double CoinsToSend) {
-        this.To = target;
-        this.From = sender;
-        this.count = CoinsToSend;
+    public SetMoneyEvent(Player sender, double CoinsToSet) {
+        this.s = sender;
+        this.c = CoinsToSet;
     }
 
     public Player getPlayer() {
-        return To;
-    }
-
-    public Player getSender() {
-        return From;
+        return s;
     }
 
     public double getCoinsAmmount() {
-        return count;
+        return c;
     }
+
 }

@@ -14,7 +14,7 @@ import cn.nukkit.event.player.PlayerEvent;
  * Project create date: 25.05.2016
  * Adv4Core and XonarTeam 2016 (c) All rights reserved.
  */
-public class SetCoinsEvent extends PlayerEvent implements Cancellable {
+public class TakeMoneyEvent extends PlayerEvent implements Cancellable {
 
     Player s;
     double c;
@@ -24,9 +24,9 @@ public class SetCoinsEvent extends PlayerEvent implements Cancellable {
         return handlers;
     }
 
-    public SetCoinsEvent(Player sender, double CoinsToSet) {
+    public TakeMoneyEvent(Player sender, double CoinsToTake) {
         this.s = sender;
-        this.c = CoinsToSet;
+        this.c = CoinsToTake;
     }
 
     public Player getPlayer() {

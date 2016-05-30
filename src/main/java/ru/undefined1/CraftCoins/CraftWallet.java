@@ -7,8 +7,8 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
-import ru.undefined1.CraftCoins.api.CraftCoinsAPI;
-import ru.undefined1.CraftCoins.listeners.CraftCoinsListener;
+import ru.undefined1.CraftCoins.api.CraftWalletAPI;
+import ru.undefined1.CraftCoins.listeners.CraftWalletListener;
 
 import java.io.File;
 
@@ -22,16 +22,16 @@ import java.io.File;
  * Adv4Core and XonarTeam 2016 (c) All rights reserved.
  */
 
-public class CraftCoins extends PluginBase implements Listener {
+public class CraftWallet extends PluginBase implements Listener {
 
-    private static CraftCoins instance;
+    private static CraftWallet instance;
 
-    public static CraftCoins getPlugin() {
+    public static CraftWallet getPlugin() {
         return instance;
     }
 
-    private static CraftCoins plugin;
-    private static CraftCoinsAPI api;
+    private static CraftWallet plugin;
+    private static CraftWalletAPI api;
 
     private File config;
     public static Config cfg;
@@ -39,7 +39,7 @@ public class CraftCoins extends PluginBase implements Listener {
     private File MoneyData;
     public static Config money;
 
-    public CraftCoins() {
+    public CraftWallet() {
     }
 
     // Getting message from configuration
@@ -49,7 +49,7 @@ public class CraftCoins extends PluginBase implements Listener {
 
     // Sending message to console with or without prefix
     public void sendConsoleMessage(String message, Boolean prefix) {
-        String prefixs = TextFormat.colorize("&e[&6CraftCoins&e] ");
+        String prefixs = TextFormat.colorize("&d[&5CraftWallet&d] ");
         if (prefix) {
             getServer().getConsoleSender().sendMessage(prefixs + TextFormat.colorize(message));
         } else {
@@ -69,27 +69,27 @@ public class CraftCoins extends PluginBase implements Listener {
         // Saving configuration
         this.getDataFolder().mkdirs();
         this.saveDefaultConfig();
-        this.saveResource("CoinsData.yml", false);
+        this.saveResource("data.yml", false);
         this.saveResource("config.yml", false);
 
         this.config = new File(this.getDataFolder(), "config.yml");
         cfg = new Config(this.config, 2);
 
-        this.MoneyData = new File(this.getDataFolder(), "CoinsData.yml");
+        this.MoneyData = new File(this.getDataFolder(), "data.yml");
         money = new Config(this.MoneyData, 2);
 
         // Registering listeners
-        getServer().getPluginManager().registerEvents(new CraftCoinsListener(this), this);
+        getServer().getPluginManager().registerEvents(new CraftWalletListener(this), this);
 
-        // Registering CraftCoinsAPI
-        api = new CraftCoinsAPI();
+        // Registering CraftWalletAPI
+        api = new CraftWalletAPI();
     }
 
-    public static CraftCoins getCraftCoins() {
+    public static CraftWallet getCraftCoins() {
         return plugin;
     }
 
-    public static CraftCoinsAPI getCraftCoinsAPI() {
+    public static CraftWalletAPI getCraftCoinsAPI() {
         return api;
     }
 
@@ -97,25 +97,25 @@ public class CraftCoins extends PluginBase implements Listener {
     @Override
     public boolean onCommand(CommandSender s, Command cmd, String cmdLabel, String[] args) {
         if(cfg.getBoolean("Settings.Enable-Commands")) {
-            if (cmdLabel.equalsIgnoreCase("coins")) {
+            if (cmdLabel.equalsIgnoreCase("money")) {
                 if (args.length == 0) {
                     Player player = (Player) s;
-                    s.sendMessage(getMessage("COINS-BALANCE").replaceAll("<player>", s.getName()).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(s.getName()))));
-                    if (CraftCoinsAPI.isBalanceFrozen(player)) {
+                    s.sendMessage(getMessage("WALLET-BALANCE").replaceAll("<player>", s.getName()).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(CraftWalletAPI.getPlayerMoney(s.getName()))));
+                    if (CraftWalletAPI.isBalanceFrozen(player)) {
                         s.sendMessage(getMessage("BALANCE-IS-FROZEN"));
                     }
                 } else if (args[0].equalsIgnoreCase("set")) {
                     if (args.length == 1) {
-                        s.sendMessage(getMessage("COINS-SET.USE"));
+                        s.sendMessage(getMessage("WALLET-SET.USE"));
                     } else {
-                        if (s.hasPermission("CraftCoins.set")) {
+                        if (s.hasPermission("CraftWallet.set")) {
                             if (s instanceof Player) {
                                 Player player = (Player) s;
                                 if (getServer().getPlayerExact(args[1]) != null) {
-                                    if (!CraftCoinsAPI.isBalanceFrozen(player)) {
-                                        if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
-                                            s.sendMessage(getMessage("COINS-SET.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.setPlayerCoins(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                    if (!CraftWalletAPI.isBalanceFrozen(player)) {
+                                        if (CraftWalletAPI.getPlayerMoney(player) != 0) {
+                                                s.sendMessage(getMessage("WALLET-SET.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(Double.parseDouble(args[2]))));
+                                                CraftWalletAPI.setPlayerMoney(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }
@@ -132,16 +132,20 @@ public class CraftCoins extends PluginBase implements Listener {
 
                 } else if (args[0].equalsIgnoreCase("pay")) {
                     if (args.length == 1) {
-                        s.sendMessage(getMessage("COINS-PAY.USE"));
+                        s.sendMessage(getMessage("WALLET-PAY.USE"));
                     } else {
-                        if (s.hasPermission("CraftCoins.pay")) {
+                        if (s.hasPermission("CraftWallet.pay")) {
                             if (s instanceof Player) {
                                 if (getServer().getPlayerExact(args[1]) != null) {
                                     Player player = (Player) s;
-                                    if (!CraftCoinsAPI.isBalanceFrozen(player)) {
-                                        if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
-                                            s.sendMessage(getMessage("COINS-PAY.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(args[1]) + Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.sendCoinsToPlayer(player, getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                    if (!CraftWalletAPI.isBalanceFrozen(player)) {
+                                        if (CraftWalletAPI.getPlayerMoney(player) != 0) {
+                                            if(getServer().getPlayerExact(args[1]).getName() != s.getName()) {
+                                            s.sendMessage(getMessage("WALLET-PAY.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(CraftWalletAPI.getPlayerMoney(args[1]) + Double.parseDouble(args[2]))));
+                                            CraftWalletAPI.sendMoneyToPlayer(player, getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                            } else {
+                                                s.sendMessage((getMessage("WALLET-PAY.YOUSELF")));
+                                            }
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }
@@ -158,16 +162,16 @@ public class CraftCoins extends PluginBase implements Listener {
                     }
                 } else if (args[0].equalsIgnoreCase("add")) {
                     if (args.length == 1) {
-                        s.sendMessage(getMessage("COINS-ADD.USE"));
+                        s.sendMessage(getMessage("WALLET-ADD.USE"));
                     } else {
-                        if (s.hasPermission("CraftCoins.add")) {
+                        if (s.hasPermission("CraftWallet.add")) {
                             if (s instanceof Player) {
                                 if (getServer().getPlayerExact(args[1]) != null) {
                                     Player player = (Player) s;
-                                    if (!CraftCoinsAPI.isBalanceFrozen(player)) {
-                                        if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
-                                            s.sendMessage(getMessage("COINS-ADD.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(args[1]) + Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.addPlayerCoins(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                    if (!CraftWalletAPI.isBalanceFrozen(player)) {
+                                        if (CraftWalletAPI.getPlayerMoney(player) != 0) {
+                                            s.sendMessage(getMessage("WALLET-ADD.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(CraftWalletAPI.getPlayerMoney(args[1]) + Double.parseDouble(args[2]))));
+                                            CraftWalletAPI.addPlayerMoney(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }
@@ -185,16 +189,16 @@ public class CraftCoins extends PluginBase implements Listener {
                 } else if (args[0].equalsIgnoreCase("take")) {
 
                     if (args.length == 1) {
-                        s.sendMessage(getMessage("COINS-TAKE.USE"));
+                        s.sendMessage(getMessage("WALLET-TAKE.USE"));
                     } else {
-                        if (s.hasPermission("CraftCoins.take")) {
+                        if (s.hasPermission("CraftWallet.take")) {
                             if (s instanceof Player) {
                                 if (getServer().getPlayerExact(args[1]) != null) {
                                     Player player = (Player) s;
-                                    if (!CraftCoinsAPI.isBalanceFrozen(player)) {
-                                        if (CraftCoinsAPI.getPlayerCoins(player) != 0) {
-                                            s.sendMessage(getMessage("COINS-TAKE.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(args[1]) - Double.parseDouble(args[2]))));
-                                            CraftCoinsAPI.takePlayerCoins(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
+                                    if (!CraftWalletAPI.isBalanceFrozen(player)) {
+                                        if (CraftWalletAPI.getPlayerMoney(player) != 0) {
+                                            s.sendMessage(getMessage("WALLET-TAKE.SUCCESSFUL").replaceAll("<player>", args[1]).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(CraftWalletAPI.getPlayerMoney(args[1]) - Double.parseDouble(args[2]))));
+                                            CraftWalletAPI.takePlayerMoney(getServer().getPlayerExact(args[1]), Double.parseDouble(args[2]));
                                         } else {
                                             s.sendMessage(getMessage("LOW-BALANCE"));
                                         }
@@ -210,13 +214,15 @@ public class CraftCoins extends PluginBase implements Listener {
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (s.hasPermission("CraftCoins.reload")) {
-                        CraftCoinsAPI.reloadConfigs();
+                    if (s.hasPermission("CraftWallet.reload")) {
+                        s.sendMessage("Configuration reloaded successful!");
+                        money.reload();
+                        cfg.reload();
                     }
                 } else {
                     if (args.length == 1) {
-                        if (s.hasPermission("CraftCoins.view")) {
-                            s.sendMessage(getMessage("COINS-BALANCE-PLAYER").replaceAll("<player>", args[0]).replaceAll("#coins", CraftCoinsAPI.getCoinsName()).replaceAll("<coins>", String.valueOf(CraftCoinsAPI.getPlayerCoins(args[0]))));
+                        if (s.hasPermission("CraftWallet.view")) {
+                            s.sendMessage(getMessage("WALLET-BALANCE-PLAYER").replaceAll("<player>", args[0]).replaceAll("#walletSymbol", CraftWalletAPI.getMoneySymbol()).replaceAll("<count>", String.valueOf(CraftWalletAPI.getPlayerMoney(args[0]))));
                         }
                     }
                 }
